@@ -19,6 +19,7 @@
             <button onclick="showEmployeeTax()">Xem thuế nhân viên</button>
             <button onclick="showManageDepartments()">Quản lý phòng ban</button>
             <button onclick="showManageEmployees()">Quản lý nhân viên</button>
+            <button onclick="logout()" class="logout-button">Đăng xuất</button>
         </div>
 
         <!-- Main Content -->
@@ -26,8 +27,7 @@
             <div class="header">
                 <h1>Phần mềm tính thuế thu nhập cá nhân - Kế toán</h1>
                 <div class="login-role">
-                    <span>Đăng nhập: <strong>Kế toán</strong></span>
-                    <button onclick="logout()" class="logout-button">Đăng xuất</button>
+                    <span id="user-role"><strong></strong></span>
                 </div>
             </div>
 
@@ -35,29 +35,35 @@
             <div id="personalInfo" class="section">
                 <h2>Nhập Thông Tin</h2>
                 <label for="name">Họ và tên:</label>
-                <input type="text" id="name" placeholder="Nhập họ và tên" value="Nguyễn Văn B" readonly>
+                <input type="text" id="name" placeholder="Nhập họ và tên" readonly>
 
                 <label for="position">Chức vụ:</label>
-                <input type="text" id="position" placeholder="Nhập chức vụ" value="Kế toán" readonly>
+                <input type="text" id="position" placeholder="Nhập chức vụ" readonly>
 
                 <label for="email">Email:</label>
-                <input type="email" id="email" placeholder="Nhập email" value="nguyenvanb@example.com" readonly>
+                <input type="email" id="email" placeholder="Nhập email" readonly>
 
                 <label for="phone">Số điện thoại:</label>
-                <input type="tel" id="phone" placeholder="Nhập số điện thoại" value="0987654321" readonly>
+                <input type="tel" id="phone" placeholder="Nhập số điện thoại" readonly>
+
+                <label for="dependents">Số người phụ thuộc:</label>
+                <input type="number" id="dependents" placeholder="Nhập số người phụ thuộc" readonly>
+
+                <label for="salary">Lương hàng tháng:</label>
+                <input type="number" id="salary" placeholder="Nhập lương hàng tháng" readonly>
             </div>
 
             <!-- Thiết lập mức giảm trừ -->
             <div id="setReduction" class="section" style="display: none;">
                 <h2>Thiết lập mức giảm trừ cá nhân</h2>
                 <label for="employeeName">Tên nhân viên:</label>
-                <input type="text" id="employeeName" value="Nguyễn Văn A">
+                <input type="text" id="employeeName">
 
                 <label for="department">Phòng ban:</label>
-                <input type="text" id="department" value="Nhân viên">
+                <input type="text" id="department" >
 
                 <label for="employeeId">ID nhân viên:</label>
-                <input type="text" id="employeeId" value="0123">
+                <input type="text" id="employeeId">
 
                 <label for="dependents">Số người phụ thuộc:</label>
                 <input type="number" id="dependents" placeholder="Nhập số người phụ thuộc">
@@ -71,12 +77,6 @@
                 <input type="text" id="searchEmployeeId" placeholder="Nhập ID nhân viên">
                 <button onclick="viewEmployeeTax()">Xem thuế</button>
                 <table id="employeeTaxTable" class="output-table">
-                    <thead>
-                        <tr>
-                            <th>Mục</th>
-                            <th>Giá trị</th>
-                        </tr>
-                    </thead>
                     <tbody></tbody>
                 </table>
             </div>
