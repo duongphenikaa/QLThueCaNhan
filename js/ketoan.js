@@ -1,3 +1,23 @@
+// Hiển thị dữ liệu người dùng khi tải trang
+window.onload = function () {
+    const user = JSON.parse(sessionStorage.getItem("loggedInUser"));
+    if (!user) {
+        alert("Bạn chưa đăng nhập!");
+        window.location.href = "../index.html";
+        return;
+    }
+
+    // Hiển thị thông tin trong phần thông tin cá nhân
+    document.getElementById("name").value = user.name || "";
+    document.getElementById("position").value = user.position || "";
+    document.getElementById("email").value = user.email || "";
+    document.getElementById("phone").value = user.phone || "";
+    document.getElementById("dependents").value = user.dependents || "";
+    document.getElementById("salary").value = user.salary || "";
+
+    // Cập nhật vai trò trong tiêu đề
+    document.getElementById("user-role").innerHTML = `${user.position}: <strong>${user.name}</strong>`;
+};
 
 // Hiển thị dữ liệu người dùng khi tải trang
 window.onload = function () {
@@ -186,72 +206,51 @@ function calculateTestTax() {
         return;
     }
 
-    const exemptionForSelf = 11000000; // Giảm trừ gia cảnh cho bản thân
-    const exemptionPerDependent = 4400000; // Giảm trừ cho mỗi người phụ thuộc
+    alert(`Mức giảm trừ đã được lưu cho nhân viên ${employeeName}, Phòng ban: ${department}, ID: ${employeeId}, Số người phụ thuộc: ${dependents}`);
+}
 
-    // Tính thu nhập chịu thuế
-    const totalExemption = exemptionForSelf + (exemptionPerDependent * dependents);
-    const taxableIncome = salary - totalExemption;
+// Function to display employee tax information based on ID
+function viewEmployeeTax() {
+    const employeeId = document.getElementById("searchEmployeeId").value;
 
     if (taxableIncome <= 0) {
         alert("Thu nhập không đủ để tính thuế.");
         return;
     }
 
-    // Khai báo các mức thuế lũy tiến
-    let taxAmount = 0;
+    // Example logic to retrieve employee information
+    // Replace this with actual data fetching logic
+    const employee = {
+        id: employeeId,
+        name: "Nguyễn Văn B",
+        department: "Kế toán",
+        salary: 15000000,
+        reduction: 5000000,
+        taxableIncome: 10000000,
+        tax: 500000
+    };
 
-    if (taxableIncome <= 5000000) {
-        taxAmount = taxableIncome * 0.05;
-    } else if (taxableIncome <= 10000000) {
-        taxAmount = taxableIncome * 0.1 - 250000;
-    } else if (taxableIncome <= 18000000) {
-        taxAmount = taxableIncome * 0.15 - 750000;
-    } else if (taxableIncome <= 32000000) {
-        taxAmount = taxableIncome * 0.2 - 1650000;
-    } else if (taxableIncome <= 52000000) {
-        taxAmount = taxableIncome * 0.25 - 3250000;
-    } else if (taxableIncome <= 80000000) {
-        taxAmount = taxableIncome * 0.3 - 5850000;
+    if (employee) {
+        const tableBody = document.getElementById("employeeTaxTable").getElementsByTagName("tbody")[0];
+        tableBody.innerHTML = `
+                <tr><td>ID</td><td>${employee.id}</td></tr>
+                <tr><td>Tên nhân viên</td><td>${employee.name}</td></tr>
+                <tr><td>Phòng ban</td><td>${employee.department}</td></tr>
+                <tr><td>Lương</td><td>${employee.salary.toLocaleString()} VNĐ</td></tr>
+                <tr><td>Giảm trừ</td><td>${employee.reduction.toLocaleString()} VNĐ</td></tr>
+                <tr><td>Thu nhập chịu thuế</td><td>${employee.taxableIncome.toLocaleString()} VNĐ</td></tr>
+                <tr><td>Thuế thu nhập cá nhân</td><td>${employee.tax.toLocaleString()} VNĐ</td></tr>
+            `;
     } else {
-        taxAmount = taxableIncome * 0.35 - 9850000;
+        alert("Không tìm thấy nhân viên với ID này.");
     }
-
-    // Hiển thị kết quả và thông tin chi tiết
-    const resultTable = document.getElementById("testTaxTable");
-    resultTable.innerHTML = `
-    <tr>
-        <th>Lương hàng tháng</th>
-        <th>Số người phụ thuộc</th>
-        <th>Thu nhập chịu thuế</th>
-        <th>Thuế thu nhập cá nhân</th>
-    </tr>
-    <tr>
-        <td>${salary.toFixed(2)} VND</td>
-        <td>${dependents}</td>
-        <td>${taxableIncome.toFixed(2)} VND</td>
-        <td>${taxAmount.toFixed(2)} VND</td>
-    </tr>
-    <tr>
-        <td colspan="4" style="text-align: left;">
-            <strong>Giải thích:</strong><br>
-            - Giảm trừ cho bản thân: ${exemptionForSelf.toLocaleString()} VND<br>
-            - Giảm trừ cho người phụ thuộc: ${exemptionPerDependent.toLocaleString()} VND x ${dependents} người = ${(exemptionPerDependent * dependents).toLocaleString()} VND<br>
-            - Tổng mức giảm trừ: ${totalExemption.toLocaleString()} VND<br>
-            - Thu nhập chịu thuế: ${taxableIncome.toLocaleString()} VND<br>
-            - Thuế được tính theo biểu thuế lũy tiến từng phần.
-        </td>
-    </tr>
-    `;
 }
 
-function saveReduction() {
-    const IDuser = parseInt(document.getElementById("employeeId2").value);
-    const salary = parseFloat(document.getElementById("salary2").value);
-    const dependents = parseInt(document.getElementById("dependents2").value);
-
-    if (isNaN(salary) || isNaN(dependents) || isNaN(IDuser)) {
-        alert("Vui lòng nhập đầy đủ và chính xác thông tin!");
+// Function to add a department
+function addDepartment() {
+    const departmentName = document.getElementById("departmentName").value;
+    if (!departmentName) {
+        alert("Vui lòng nhập tên phòng ban.");
         return;
     }
 
@@ -426,204 +425,19 @@ function loadAnnualTax() {
                 </tr>
             `;
 
-            filteredData.forEach(row => {
-                const id = row[0];
-                const name = row[1];
-                const position = row[2];
-                const salary = row[3]; // Lương
-                const dependents = row[6];
-                const tax = calculateAnnualTax(salary, dependents);
-
-                table.innerHTML += `
-                    <tr>
-                        <td>${id}</td>
-                        <td>${name}</td>
-                        <td>${position}</td>
-                        <td>${salary} VND</td>
-                        <td>${dependents}</td>
-                        <td>${tax} VND</td>
-                    </tr>
-                `;
-            });
-        })
-        .catch(error => {
-            console.error("Lỗi khi đọc file Excel:", error);
-            alert("Không thể tải dữ liệu thuế.");
-        });
+    document.getElementById("employeeName").value = "";
+    document.getElementById("employeeContact").value = "";
+    document.getElementById("employeeSalary").value = "";
 }
 
-function calculateAnnualTax(salary, dependents) {
-    const exemptionForSelf = 11000000; // Giảm trừ bản thân
-    const exemptionPerDependent = 4400000; // Giảm trừ mỗi người phụ thuộc
-    const totalExemption = exemptionForSelf + (exemptionPerDependent * dependents);
-
-    const monthlyTaxableIncome = salary - totalExemption;
-    const annualTaxableIncome = monthlyTaxableIncome * 12;
-
-    let taxAmount = 0;
-
-    if (annualTaxableIncome > 0) {
-        if (annualTaxableIncome <= 60000000) {
-            taxAmount = annualTaxableIncome * 0.05;
-        } else if (annualTaxableIncome <= 120000000) {
-            taxAmount = annualTaxableIncome * 0.1 - 3000000;
-        } else if (annualTaxableIncome <= 216000000) {
-            taxAmount = annualTaxableIncome * 0.15 - 7500000;
-        } else if (annualTaxableIncome <= 384000000) {
-            taxAmount = annualTaxableIncome * 0.2 - 16500000;
-        } else if (annualTaxableIncome <= 624000000) {
-            taxAmount = annualTaxableIncome * 0.25 - 32500000;
-        } else if (annualTaxableIncome <= 960000000) {
-            taxAmount = annualTaxableIncome * 0.3 - 58500000;
-        } else {
-            taxAmount = annualTaxableIncome * 0.35 - 98500000;
-        }
-    }
-
-    return taxAmount;
+// Function to delete an employee
+function deleteEmployee(button) {
+    const row = button.closest("tr");
+    row.remove();
 }
 
-function populateYearSelect() {
-    const filePath = '../excel_data/data_tt.xlsx';
-
-    fetch(filePath)
-        .then(response => response.arrayBuffer()) // Đọc file Excel
-        .then(data => {
-            const workbook = XLSX.read(data, { type: 'array' }); // Đọc dữ liệu Excel
-            const sheetName = workbook.SheetNames[0]; // Lấy sheet đầu tiên
-            const worksheet = workbook.Sheets[sheetName]; // Lấy nội dung sheet
-
-            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }); // Chuyển sheet thành mảng 2D
-            const years = jsonData.slice(1).map(row => row[8]); // Lấy dữ liệu cột năm (cột 8)
-
-            // Lọc bỏ các giá trị không hợp lệ (ví dụ: năm 9999 hoặc trống)
-            const validYears = [...new Set(years.filter(year => year && year !== 9999))];
-
-            // Sort và tạo dropdown cho năm
-            const yearSelect = document.getElementById("yearSelect");
-            yearSelect.innerHTML = ""; // Xóa các tùy chọn cũ
-
-            validYears.sort().reverse().forEach(year => {
-                const option = document.createElement("option");
-                option.value = year;
-                option.textContent = year;
-                yearSelect.appendChild(option);
-            });
-
-            if (validYears.length > 0) {
-                loadAnnualTax(); // Tải dữ liệu của năm đầu tiên
-            } else {
-                alert("Không có dữ liệu năm hợp lệ!");
-            }
-        })
-        .catch(error => {
-            console.error("Lỗi khi đọc file Excel:", error);
-            alert("Không thể tải danh sách năm.");
-        });
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    populateYearSelect(); // Tạo danh sách năm
-});
-
-
-function exportToExcel() {
-    const table = document.getElementById("annual-tax-table");
-    const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet 1" });  // Chuyển bảng HTML thành workbook Excel
-
-    let namefile = document.getElementById("name").value;
-    // Tạo link tải xuống file Excel
-
-    XLSX.writeFile(wb, `${namefile}_Thuế.xlsx`);  // Tải file Excel
-}
-
-function loadEmployeeTaxes() {
-    const filePath = '../excel_data/data_tt.xlsx';
-
-    fetch(filePath)
-        .then(response => response.arrayBuffer()) // Đọc file Excel
-        .then(data => {
-            const workbook = XLSX.read(data, { type: 'array' }); // Đọc dữ liệu Excel
-            const sheetName = workbook.SheetNames[0]; // Lấy sheet đầu tiên
-            const worksheet = workbook.Sheets[sheetName]; // Lấy nội dung sheet
-
-            const jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 }); // Chuyển sheet thành mảng 2D
-            const header = jsonData[0]; // Tiêu đề
-            const rows = jsonData.slice(1); // Dữ liệu các dòng
-
-            // Tạo bảng hiển thị
-            const tableBody = document.getElementById("employeeTaxTable");
-            tableBody.innerHTML = ""; // Xóa nội dung cũ
-
-            rows.forEach(row => {
-                const id = row[0];
-                const name = row[1];
-                const position = row[2];
-                const salary = row[3]; 
-                const dependents = row[6];
-
-                const tax = calculateTax(salary, dependents); // Tính thuế cho nhân viên
-
-                const rowHTML = `
-                    <tr>
-                        <td>${id}</td>
-                        <td>${name}</td>
-                        <td>${position}</td>
-                        <td>${salary} VND</td> <!-- Hiển thị lương nguyên bản -->
-                        <td>${dependents}</td>
-                        <td>${tax} VND</td> <!-- Hiển thị thuế nguyên bản -->
-                    </tr>
-                `;
-                tableBody.innerHTML += rowHTML; // Thêm dòng vào bảng
-            });
-        })
-        .catch(error => {
-            console.error("Lỗi khi tải dữ liệu Excel:", error);
-            alert("Không thể tải dữ liệu từ file Excel.");
-        });
-}
-
-function calculateTax(salary, dependents) {
-    const exemptionForSelf = 11000000; // Giảm trừ bản thân
-    const exemptionPerDependent = 4400000; // Giảm trừ mỗi người phụ thuộc
-
-    const totalExemption = exemptionForSelf + (exemptionPerDependent * dependents);
-    const taxableIncome = salary - totalExemption;
-
-    if (taxableIncome <= 0) {
-        return 0; // Không phải thuế nếu thu nhập không đủ
-    }
-
-    let taxAmount = 0;
-
-    // Tính thuế theo biểu thuế lũy tiến
-    if (taxableIncome <= 5000000) {
-        taxAmount = taxableIncome * 0.05;
-    } else if (taxableIncome <= 10000000) {
-        taxAmount = taxableIncome * 0.1 - 250000;
-    } else if (taxableIncome <= 18000000) {
-        taxAmount = taxableIncome * 0.15 - 750000;
-    } else if (taxableIncome <= 32000000) {
-        taxAmount = taxableIncome * 0.2 - 1650000;
-    } else if (taxableIncome <= 52000000) {
-        taxAmount = taxableIncome * 0.25 - 3250000;
-    } else if (taxableIncome <= 80000000) {
-        taxAmount = taxableIncome * 0.3 - 5850000;
-    } else {
-        taxAmount = taxableIncome * 0.35 - 9850000;
-    }
-
-    return taxAmount;
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-    loadEmployeeTaxes(); // Tải dữ liệu thuế khi vào giao diện
-});
-
-function showManageDepartments() {
-    toggleSection("manageDepartments");
-}
-
-function showManageEmployees() {
-    toggleSection("manageEmployees");
+// Function to log out
+function logout() {
+    alert("Bạn đã đăng xuất.");
+    // Redirect to login page or perform other logout actions here
 }

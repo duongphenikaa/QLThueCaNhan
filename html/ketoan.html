@@ -38,80 +38,31 @@
             <div id="personalInfo" class="section">
                 <h2>Thông Tin Cá Nhân</h2>
                 <label for="name">Họ và tên:</label>
-                <input type="text" id="name" disabled>
+                <input type="text" id="name" placeholder="Nhập họ và tên" value="Nguyễn Văn B" readonly>
 
                 <label for="position">Chức vụ:</label>
-                <input type="text" id="position" disabled>
+                <input type="text" id="position" placeholder="Nhập chức vụ" value="Kế toán" readonly>
 
                 <label for="email">Email:</label>
-                <input type="email" id="email" disabled>
+                <input type="email" id="email" placeholder="Nhập email" value="nguyenvanb@example.com" readonly>
 
                 <label for="phone">Số điện thoại:</label>
-                <input type="tel" id="phone" disabled>
-
-                <label for="dependents">Số người phụ thuộc:</label>
-                <input type="number" id="dependents" disabled>
-
-                <label for="salary">Lương hàng tháng:</label>
-                <input type="number" id="salary" disabled>
-            </div>
-
-            <!-- Tính thử thuế -->
-            <div id="taxCalculation" class="section" style="display: none;">
-                <h2>Tính thử thuế</h2>
-                <p>
-                    <strong>Hướng dẫn cách tính:</strong><br>
-                    - Giảm trừ cho bản thân: 11.000.000 VND/tháng.<br>
-                    - Giảm trừ cho mỗi người phụ thuộc: 4.400.000 VND/tháng.<br>
-                    - Thu nhập chịu thuế = Lương - Tổng mức giảm trừ.<br>
-                    - Thuế thu nhập cá nhân được tính theo biểu thuế lũy tiến từng phần.
-                </p>
-                <p>
-                    <strong>Biểu thuế lũy tiến từng phần:</strong><br>
-                    - 5% cho thu nhập đến 5.000.000 VND.<br>
-                    - 10% cho phần thu nhập từ 5.000.001 đến 10.000.000 VND.<br>
-                    - 15% cho phần thu nhập từ 10.000.001 đến 18.000.000 VND.<br>
-                    - 20% cho phần thu nhập từ 18.000.001 đến 32.000.000 VND.<br>
-                    - 25% cho phần thu nhập từ 32.000.001 đến 52.000.000 VND.<br>
-                    - 30% cho phần thu nhập từ 52.000.001 đến 80.000.000 VND.<br>
-                    - 35% cho phần thu nhập trên 80.000.000 VND.
-                </p>
-                <label for="salary">Lương hàng tháng:</label>
-                <input type="number" id="salary1" placeholder="Nhập lương hàng tháng">
-
-                <label for="dependent">Số người phụ thuộc:</label>
-                <input type="number" id="dependent1" placeholder="Nhập số người phụ thuộc" min="0">
-
-                <button onclick="calculateTestTax()">Tính Thuế</button>
-                <table id="testTaxTable" class="output-table"></table>
-            </div>
-
-            <!-- Tính thuế 1 tháng -->
-            <div id="calculateMonthlyTax" class="section" style="display: none;">
-                <!-- Kết quả sẽ được cập nhật ở đây bởi JavaScript -->
-            </div>
-
-            <!-- Quyết toán thuế 1 năm -->
-            <div id="annualTax" class="section" style="display: none;">
-                <h3>Kết quả quyết toán thuế 1 năm</h3>
-                <label for="yearSelect">Chọn năm:</label>
-                <select id="yearSelect" onchange="loadAnnualTax()">
-                    <!-- Các tùy chọn năm sẽ được tạo động -->
-                </select>
-                <table id="annual-tax-table" class="output-table">
-                    <!-- Dữ liệu thuế sẽ được hiển thị tại đây -->
-                </table>
-                <button onclick="exportToExcel()">Xuất ra Excel</button>
+                <input type="tel" id="phone" placeholder="Nhập số điện thoại" value="0987654321" readonly>
             </div>
             
 
             <!-- Thiết lập mức giảm trừ -->
             <div id="setReduction" class="section" style="display: none;">
                 <h2>Thiết lập mức giảm trừ cá nhân</h2>
+                <label for="employeeName">Tên nhân viên:</label>
+                <input type="text" id="employeeName" value="Nguyễn Văn A">
+
+                <label for="department">Phòng ban:</label>
+                <input type="text" id="department" value="Nhân viên">
+
                 <label for="employeeId">ID nhân viên:</label>
-                <input type="text" id="employeeId2" placeholder="Nhập ID nhân viên">
-                <label for="salary">Lương hàng tháng:</label>
-                <input type="number" id="salary2" placeholder="Nhập lương hàng tháng">
+                <input type="text" id="employeeId" value="0123">
+
                 <label for="dependents">Số người phụ thuộc:</label>
                 <input type="number" id="dependents2" placeholder="Nhập số người phụ thuộc">
                 <button onclick="saveReduction()">Lưu</button>
@@ -120,22 +71,17 @@
             <!-- Xem thuế nhân viên -->
             <div id="employeeTax" class="section" style="display: none;">
                 <h2>Xem thuế nhân viên</h2>
-                
-                <!-- Bảng hiển thị thông tin nhân viên và thuế -->
-                <table border="1">
+                <label for="searchEmployeeId">Nhập ID nhân viên:</label>
+                <input type="text" id="searchEmployeeId" placeholder="Nhập ID nhân viên">
+                <button onclick="viewEmployeeTax()">Xem thuế</button>
+                <table id="employeeTaxTable" class="output-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Họ tên</th>
-                            <th>Chức vụ</th>
-                            <th>Lương</th>
-                            <th>Số người phụ thuộc</th>
-                            <th>Thuế thu nhập cá nhân</th>
+                            <th>Mục</th>
+                            <th>Giá trị</th>
                         </tr>
                     </thead>
-                    <tbody id="employeeTaxTable">
-                        <!-- Dữ liệu sẽ được điền từ JavaScript -->
-                    </tbody>
+                    <tbody></tbody>
                 </table>
             </div>
             
